@@ -1,0 +1,10 @@
+{% extends "account/base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="container" style="width: 50%">
+    <h1>Dashboard</h1>
+    <p>Welcome to your dashboard.</p>
+    <p><a class="p-2 text-dark" href="{% url "password_change" %}">Want to change your password?</a></p>
+    </div>
+{% endblock %}

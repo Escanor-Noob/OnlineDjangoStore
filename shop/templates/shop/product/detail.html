@@ -1,0 +1,98 @@
+{% extends "account/base.html" %}
+
+
+
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+
+{% block content %}
+    <br/>
+    <p>
+    <div class="container" style="overflow: auto">
+        <div class="product-detail">
+            <img src="{% if product.image %}{{ product.image.url }}{% endif %}">
+            <h1>{{ product.name }}</h1>
+            <h2><a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a></h2>
+            <p class="price">${{ product.price }}
+            </p>
+            <form action="{% url "cart:cart_add" product.id %}" method="post">
+                {{ cart_product_form }}
+                {% csrf_token %}
+                <input type="submit" value="Add to cart">
+            </form>
+            {{ product.description|linebreaks }}
+        </div>
+    </div>
+    </p>
+
+    <div class="container">
+
+    <div id="main" class="product-list">
+    <h2>Similar Products</h2>
+        {% for producti in similar_products %}
+            <div class="item">
+                <a href="{{ producti.get_absolute_url }}">
+                    <img src="{% if producti.image %}{{ producti.image.url }}{% endif %}"></a>
+                    <a href="{{ producti.get_absolute_url }}">{{ producti.name }}
+                    </a><br>${{ producti.price }}
+            </div>
+        {% empty %}
+            There are no similar Products yet.
+        {% endfor %}
+    </div>
+    </div>
+    <hr>
+    <br>
+
+
+
+
+    <div class="container">
+            {% if recommended_products %}
+                <div class="recommendations">
+                    <h3>People who bought this also bought</h3>
+                    {% for p in recommended_products %}
+                        <div class="item">
+                            <a href="{{ p.get_absolute_url }}">
+                                <img src="{% if p.image %}{{ p.image.url }}{% endif %}">
+                            </a>
+                            <p><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></p>
+                        </div>
+                    {% endfor %}
+                </div>
+    </div>{% endif %}
+
+    <div class="container" style="overflow: auto">
+            {% with comments.count as total_comments %}
+
+                <h2>
+                    {{ total_comments }} review{{ total_comments|pluralize }}
+                </h2>
+            {% endwith %}
+
+            {% for comment in comments %}
+                <div class="comment">
+                    <p class="info">
+                        review {{ forloop.counter }} by {{ comment.name }}
+                        {{ comment.created }}
+                    </p>
+                    {{ comment.body|linebreaks }}
+                </div>
+            {% empty %}
+                <p>There are no comments yet.</p>
+            {% endfor %}
+            {% if user.is_authenticated %}
+                {% if new_comment %}
+                    <h2>Your review has been added.</h2>
+                {% else %}
+                    <h2>Add a new review</h2>
+                    <form method="post">
+                        {{ comment_form.as_p }}
+                        {% csrf_token %}
+                        <p><input type="submit" value="Add comment"></p>
+                    </form>
+                {% endif %}
+            {% endif %}
+    </div>
+{% endblock %}

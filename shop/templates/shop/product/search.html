@@ -1,0 +1,47 @@
+{% extends "account/base.html" %}
+
+{% block title %}Search{% endblock %}
+{% block content %}
+
+
+
+
+
+    {% if request.user.is_authenticated %}
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url "shop:product_list" %}">PyCharm Edition.</a>
+
+            <form method="get">
+            {{ form.query }}
+            <input type="submit" value="Search">
+            </form>
+        </a>
+    </nav>
+{% endif %}
+
+
+
+
+    <div class="container">
+    {% if query %}
+    <h1>Posts containing "{{ query }}"</h1>
+        <h3>
+            {% with results.count as total_results %}
+                Found {{ total_results }} result {{ total_results|pluralize }}
+            {% endwith %}
+        </h3>
+        <div id="main" class="product-list" style="overflow: auto">
+        <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
+        {% for producti in results %}
+            <div class="item">
+                <a href="{{ producti.get_absolute_url }}">
+                    <img src="{% if producti.image %}{{ producti.image.url }}{% endif %}" height="250" width="300"></a>
+                    <a href="{{ producti.get_absolute_url }}">{{ producti.name }}
+                    </a><br>${{ producti.price }}
+            </div>
+        {% endfor %}
+    </div>
+
+    {% endif %}
+    </div>
+{% endblock %}

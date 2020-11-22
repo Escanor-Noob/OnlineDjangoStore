@@ -1,0 +1,52 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Checkout" %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <h1>{% trans "Checkout" %}</h1>
+        <div class="order-info"><h3>Y{% trans "Your order" %}</h3>
+            <ul>
+                {% for item in cart %}
+                <li>{{ item.quantity }}x {{ item.product.name }}
+                    <span>${{ item.total_price|floatformat:2 }}</span>
+                </li>{% endfor %}{% if cart.coupon %}
+                <li>"{{ cart.coupon.code }}" ({{ cart.coupon.discount }}% off)
+                    <span class="neg">- ${{ cart.get_discount|floatformat:2 }}</span>
+                </li>
+            {% endif %}
+            </ul>
+            <p>Total: ${{ cart.get_total_price_after_discount|floatformat:2 }}</p>
+        </div>
+
+        <form method="post" class="order-form">
+            {% if not request.user.is_authenticated %}
+                {{ form.as_p }}
+            {% else %}
+
+                {{ form.address.errors }}
+                <label for="{{ form.address.id_for_label }}">Adress:</label>
+                {{ form.address }}
+
+                <div class="fieldWrapper">
+                    {{ form.postal_code.errors }}
+                    <label for="{{ form.postal_code.id_for_label }}">Postal Code:</label>
+                    {{ form.postal_code }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.city.errors }}
+                    <label for="{{ form.city.id_for_label }}">City:</label>
+                    {{ form.city }}
+                </div>
+            {% endif %}
+            <p><input type="submit" value="Place order"></p>
+            {% csrf_token %}
+        </form>
+
+    </div>
+
+{% endblock %}

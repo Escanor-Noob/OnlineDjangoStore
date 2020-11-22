@@ -1,0 +1,88 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+
+
+<html>
+<head>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>{% block title %}{% endblock %}</title>
+
+
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
+
+
+    <!-- Bootstrap core CSS -->
+
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="{% url "shop:product_list" %}">Ecomm. Store</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+
+    <ul class="navbar-nav mr-auto">
+    {% if request.user.is_authenticated %}
+      <li class="nav-item">
+            <a class="nav-link" href="{% url "edit" %}">Hello {{ request.user.first_name }}</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url "dashboard" %}">Dashboard</a>
+      </li>
+        {% endif %}
+    </ul>
+      {% if request.user.is_authenticated %}
+          <a class="p-2 text-dark" href="{% url "logout" %}">Logout</a>
+        {% else %}
+            <a class="p-2 text-dark" href="{% url "login" %}">Login</a>
+            <a class="btn btn-outline-primary" href="{% url "register" %}">Sign up</a>
+        {% endif %}
+
+                <a class="nav-link" href="{% url "cart:cart_detail" %}" style="padding: 0">
+                    {% with total_items=cart|length %}
+                        {% if total_items > 0 %}
+                            <a href="{% url "cart:cart_detail" %}">
+                            Cart:{{ total_items }}.
+                        {% else %}
+                            Cart:0 .
+                        {% endif %}
+                    {% endwith %}
+                    </a>
+
+    <a class="btn btn-outline-primary" href="{% url "shop:product_search" %}">Search</a>
+
+</nav>
+
+{% if messages %}
+    <div class="container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message|safe }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+
+{% block content %}{% endblock %}
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>
